@@ -22,7 +22,7 @@ fn derive_hello_world_internal(input: syn::DeriveInput) -> proc_macro2::TokenStr
 
 #[cfg(test)]
 mod tests {
-    use runtime_macros::emulate_derive_expansion_fallible;
+    use runtime_macros_derive::emulate_derive_expansion_fallible;
     use super::derive_hello_world_internal;
     use std::{env, fs};
 

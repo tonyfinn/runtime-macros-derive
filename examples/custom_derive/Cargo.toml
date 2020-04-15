@@ -16,4 +16,4 @@ version = "1.0.11"
 features = ["derive", "parsing", "printing", "full"]
 
 [dev-dependencies]
-runtime-macros = { path = "../.." }
+runtime-macros-derive = { path = "../.." }

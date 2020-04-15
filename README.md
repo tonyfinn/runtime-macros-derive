@@ -3,7 +3,7 @@
 Fork of [`runtime-macros`](https://github.com/jeremydavis519/runtime-macros)
 with custom derive support
 
-[![Build Status](https://www.travis-ci.org/jeremydavis519/runtime-macros.svg?branch=master)](https://www.travis-ci.org/jeremydavis519/runtime-macros) [![Coverage Status](https://coveralls.io/repos/github/jeremydavis519/runtime-macros/badge.svg)](https://coveralls.io/github/jeremydavis519/runtime-macros)
+[![Build Status](https://www.travis-ci.org/tonyfinn/runtime-macros.svg?branch=master)](https://www.travis-ci.org/tonyfinn/runtime-macros) [![Coverage Status](https://coveralls.io/repos/github/tonyfinn/runtime-macros/badge.svg)](https://coveralls.io/github/tonyfinn/runtime-macros)
 
 This crate offers a way to emulate the process of procedural macro expansion at run time.
 It is intended for use with code coverage tools like [`tarpaulin`], which can't measure

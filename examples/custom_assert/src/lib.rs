@@ -48,7 +48,7 @@ impl ToTokens for CustomAssert {
 
 #[cfg(test)]
 mod tests {
-    use runtime_macros::emulate_macro_expansion_fallible;
+    use runtime_macros_derive::emulate_macro_expansion_fallible;
     use super::custom_assert_internal;
     use std::{env, fs};
 
