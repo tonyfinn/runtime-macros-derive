@@ -1,4 +1,7 @@
-# runtime-macros
+# runtime-macros-derive
+
+Fork of [`runtime-macros`](https://github.com/jeremydavis519/runtime-macros)
+with custom derive support
 
 [![Build Status](https://www.travis-ci.org/jeremydavis519/runtime-macros.svg?branch=master)](https://www.travis-ci.org/jeremydavis519/runtime-macros) [![Coverage Status](https://coveralls.io/repos/github/jeremydavis519/runtime-macros/badge.svg)](https://coveralls.io/github/jeremydavis519/runtime-macros)
 
@@ -20,4 +23,4 @@ macro.
 See the `/examples` directory in the [repository] for working examples. Note that the
 `custom_assert` example requires nightly at present.
 
-[repository]: https://github.com/jeremydavis519/runtime-macros
+[repository]: https://github.com/tonyfinn/runtime-macros

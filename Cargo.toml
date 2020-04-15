@@ -1,19 +1,19 @@
 [package]
-name = "runtime-macros"
-version = "0.3.0"
-authors = ["Jeremy Davis <jeremydavis519@gmail.com>"]
+name = "runtime-macros-derive"
+version = "0.4.0"
+authors = ["Tony Finn <git@tonyfinn.com>", "Jeremy Davis <jeremydavis519@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Simulate expansion of procedural macros at run time"
 keywords = ["macro", "code-coverage", "proc_macro", "testing"]
-repository = "https://github.com/jeremydavis519/runtime-macros"
+repository = "https://github.com/tonyfinn/runtime-macros"
 categories = ["development-tools"]
 readme = "README.md"
 include = ["/Cargo.toml", "/src/**/*.rs", "/README.md", "/LICENSE-APACHE", "/LICENSE-MIT"]
 edition = "2018"
 
 [badges]
-travis-ci = { repository = "jeremydavis519/runtime-macros", branch = "master" }
-coveralls = { repository = "jeremydavis519/runtime-macros", branch = "master", service = "github" }
+travis-ci = { repository = "tonyfinn/runtime-macros", branch = "master" }
+coveralls = { repository = "tonyfinn/runtime-macros", branch = "master", service = "github" }
 
 [lib]
 crate-type = ["lib"]
