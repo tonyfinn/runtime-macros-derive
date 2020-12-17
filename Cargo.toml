@@ -23,5 +23,5 @@ proc-macro2 = "1.0"
 syn = { version = "1.0.54", default-features = false, features = ["derive", "parsing", "full", "visit", "extra-traits"] }
 
 [dev-dependencies]
-cargo-tarpaulin = "0.12.4"
+cargo-tarpaulin = "0.16.0"
 
