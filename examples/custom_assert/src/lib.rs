@@ -1,9 +1,9 @@
 extern crate proc_macro;
 
 use quote::{quote, ToTokens, TokenStreamExt};
-use syn::{Expr, Token};
 use syn::parse::{self, Parse, ParseStream};
 use syn::punctuated::Punctuated;
+use syn::{Expr, Token};
 
 /// Used exactly like the built-in `assert!` macro. This function has to be a stub whether
 /// proc_macro2 is used or not because Rust complains if we try to use a `#[proc_macro]` function
@@ -23,17 +23,21 @@ fn custom_assert_internal(ts: proc_macro2::TokenStream) -> proc_macro2::TokenStr
 
 struct CustomAssert {
     expr: Expr,
-    message: Punctuated<Expr, Token![,]>
+    message: Punctuated<Expr, Token![,]>,
 }
 
 impl Parse for CustomAssert {
     fn parse(input: ParseStream) -> parse::Result<Self> {
         let expr = input.call(Expr::parse)?; // Required expression
-        if input.parse::<Token![,]>().is_ok() { // Optional message
+        if input.parse::<Token![,]>().is_ok() {
+            // Optional message
             let message = input.call(Punctuated::parse_separated_nonempty)?;
             Ok(CustomAssert { expr, message })
         } else {
-            Ok(CustomAssert { expr, message: Punctuated::new() })
+            Ok(CustomAssert {
+                expr,
+                message: Punctuated::new(),
+            })
         }
     }
 }
@@ -48,8 +52,8 @@ impl ToTokens for CustomAssert {
 
 #[cfg(test)]
 mod tests {
-    use runtime_macros_derive::emulate_macro_expansion_fallible;
     use super::custom_assert_internal;
+    use runtime_macros_derive::emulate_macro_expansion_fallible;
     use std::{env, fs};
 
     #[test]
@@ -71,6 +75,9 @@ mod tests {
         path.push("compile-fail");
         path.push("syntax_error.rs");
         let file = fs::File::open(path).unwrap();
-        assert!(emulate_macro_expansion_fallible(file, "custom_assert", custom_assert_internal).is_err());
+        assert!(
+            emulate_macro_expansion_fallible(file, "custom_assert", custom_assert_internal)
+                .is_err()
+        );
     }
 }
