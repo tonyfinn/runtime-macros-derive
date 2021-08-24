@@ -24,4 +24,3 @@ syn = { version = "1.0.74", default-features = false, features = ["derive", "par
 
 [dev-dependencies]
 cargo-tarpaulin = "0.18.0"
-
