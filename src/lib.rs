@@ -334,4 +334,17 @@ mod tests {
         let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
         assert_eq!(return_code, 0);
     }
+
+    #[test]
+    fn derive_macro_coverage() {
+        let mut config = Config::default();
+        let test_dir = env::current_dir()
+            .unwrap()
+            .join("examples")
+            .join("custom_derive");
+        config.manifest = test_dir.join("Cargo.toml");
+        config.test_timeout = time::Duration::from_secs(60);
+        let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
+        assert_eq!(return_code, 0);
+    }
 }
