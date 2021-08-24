@@ -22,3 +22,9 @@ See the `/examples` directory in the [repository] for working examples. Note tha
 `custom_assert` example requires nightly at present.
 
 [repository]: https://github.com/tonyfinn/runtime-macros
+
+
+## Development note
+
+To run tests, run `cargo test -- --test-threads 1` - Tarpaulin is not capable of running
+multiple instances at once
