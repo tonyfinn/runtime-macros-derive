@@ -13,8 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          # Todo: Switch to stable when proc_macro_hygiene is stailised
-          toolchain: nightly
+          toolchain: stable
           override: true
           components: rustfmt
       - name: clean
