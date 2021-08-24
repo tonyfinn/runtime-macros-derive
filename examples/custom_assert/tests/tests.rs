@@ -1,4 +1,3 @@
-#![feature(proc_macro_hygiene)]
 use custom_assert::custom_assert;
 
 #[test]
