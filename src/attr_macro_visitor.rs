@@ -12,10 +12,17 @@ struct MacroAttrs {
 
 impl Parse for MacroAttrs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let content;
-        parenthesized!(content in input);
-        let tokens = content.parse()?;
-        Ok(MacroAttrs { tokens })
+        if input.is_empty() {
+            Ok(MacroAttrs {
+                tokens: input.parse()?,
+            })
+        } else {
+            let content;
+            parenthesized!(content in input);
+            Ok(MacroAttrs {
+                tokens: content.parse()?,
+            })
+        }
     }
 }
 
