@@ -34,6 +34,10 @@ use std::fs;
 use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
 
+use attr_macro_visitor::AttributeMacroVisitor;
+
+mod attr_macro_visitor;
+
 /// Parses the given Rust source file, finding functionlike macro expansions using `macro_path`.
 /// Each time it finds one, it calls `proc_macro_fn`, passing it the inner `TokenStream` just as
 /// if the macro were being expanded. The only effect is to verify that the macro doesn't panic,
@@ -264,6 +268,90 @@ where
             },
             &*ast,
         );
+    })
+    .map_err(|_| {
+        Error::ParseError(syn::parse::Error::new(
+            proc_macro2::Span::call_site(),
+            "macro expansion panicked",
+        ))
+    })?;
+
+    Ok(())
+}
+
+/// Parses the given Rust source file, finding attributes macro expansions using `macro_path`.
+/// Each time it finds one, it calls `derive_fn`, passing it a `syn::DeriveInput`.
+///
+/// Note that this parser only handles Rust's syntax, so it cannot resolve paths to see if they
+/// are equivalent to the given one. The paths used to reference the macro must be exactly equal
+/// to the one given in order to be expanded by this function. For example, if `macro_path` is
+/// `"foo"` and the file provided calls the macro using `#[bar::foo]`, this function will not know
+/// to expand it, and the macro's code coverage will be underestimated. Also it is important, that
+/// this function would expand every matching attribute, so it is important to desing your macros
+/// in the way, the attribute do not collide with other attributes used in tests - not only
+/// actual macros, but also attributes eaten by other macros/derives.
+///
+/// This function follows the standard syn pattern of implementing most of the logic using the
+/// `proc_macro2` types, leaving only those methods that can only exist for `proc_macro=true`
+/// crates, such as types from `proc_macro` or `syn::parse_macro_input` in the outer function.
+/// This allows use of the inner function in tests which is needed to expand it here.
+///
+/// # Returns
+///
+/// `Ok` on success, or an instance of [`Error`] indicating any error that occurred when trying to
+/// read or parse the file.
+///
+/// [`Error`]: enum.Error.html
+///
+/// # Example
+///
+/// ```ignore
+/// # // This example doesn't compile because procedural macros can only be made in crates with
+/// # // type "proc-macro".
+/// # #![cfg(feature = "proc-macro")]
+/// # extern crate proc_macro;
+///
+/// use quote::quote;
+/// use syn::parse_macro_input;
+///
+/// #[proc_macro_attribute]
+/// fn hello(attr: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_macro::TokenStream {
+///     hello_internal(attr.into(), item.into()).into()
+/// }
+///
+/// fn hello_intenrnal(attr: proc_macro2::TokenStream, item: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
+///     quote!(#item)
+/// }
+///
+/// #[test]
+/// fn macro_code_coverage() {
+///     let file = std::fs::File::open("tests/tests.rs");
+///     emulate_attribute_expansion_fallible(file, "hello", hello_internal);
+/// }
+/// ```
+pub fn emulate_attribute_expansion_fallible<Arg, Res>(
+    mut file: fs::File,
+    macro_path: &str,
+    macro_fn: impl Fn(Arg, Arg) -> Res,
+) -> Result<(), Error>
+where
+    Arg: From<proc_macro2::TokenStream>,
+    Res: Into<proc_macro2::TokenStream>,
+{
+    let macro_fn = AssertUnwindSafe(
+        |attr: proc_macro2::TokenStream, item: proc_macro2::TokenStream| {
+            macro_fn(attr.into(), item.into()).into()
+        },
+    );
+
+    let mut content = String::new();
+    file.read_to_string(&mut content).map_err(Error::IoError)?;
+
+    let ast = AssertUnwindSafe(syn::parse_file(content.as_str()).map_err(Error::ParseError)?);
+    let macro_path: syn::Path = syn::parse_str(macro_path).map_err(Error::ParseError)?;
+
+    panic::catch_unwind(|| {
+        syn::visit::visit_file(&mut AttributeMacroVisitor::new(macro_path, macro_fn), &*ast);
     })
     .map_err(|_| {
         Error::ParseError(syn::parse::Error::new(
