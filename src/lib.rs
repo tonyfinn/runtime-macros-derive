@@ -408,31 +408,78 @@ mod tests {
     extern crate cargo_tarpaulin;
     use self::cargo_tarpaulin::config::Config;
     use self::cargo_tarpaulin::launch_tarpaulin;
-    use std::{env, time};
+    use std::{env, time, sync::{Arc, Mutex, Once}, panic::UnwindSafe};
+
+
+    static mut TARPAULIN_MUTEX: Option<Arc<Mutex<()>>> = None;
+    static SETUP_TEST_MUTEX: Once = Once::new();
+
+
+    pub(crate) fn test_mutex() -> Arc<Mutex<()>> {
+        unsafe {
+            SETUP_TEST_MUTEX.call_once(|| {
+                TARPAULIN_MUTEX = Some(Arc::new(Mutex::new(())));
+            });
+            Arc::clone(TARPAULIN_MUTEX.as_ref().unwrap())
+        }
+    }
+
+
+    pub(crate) fn with_test_lock<F, R>(f: F) -> R
+    where
+        R: Send + 'static,
+        F: FnOnce() -> R + Send + UnwindSafe + 'static,
+    {
+        let test_mutex = test_mutex();
+        let test_lock = test_mutex.lock().expect("Failed to acquire test lock");
+        let res = f();
+        drop(test_lock);
+        res
+    }
+
 
     #[test]
     fn proc_macro_coverage() {
-        let mut config = Config::default();
-        let test_dir = env::current_dir()
-            .unwrap()
-            .join("examples")
-            .join("custom_assert");
-        config.manifest = test_dir.join("Cargo.toml");
-        config.test_timeout = time::Duration::from_secs(60);
-        let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
-        assert_eq!(return_code, 0);
+        with_test_lock(|| {
+            let mut config = Config::default();
+            let test_dir = env::current_dir()
+                .unwrap()
+                .join("examples")
+                .join("custom_assert");
+            config.manifest = test_dir.join("Cargo.toml");
+            config.test_timeout = time::Duration::from_secs(60);
+            let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
+            assert_eq!(return_code, 0);
+        })
     }
 
     #[test]
     fn derive_macro_coverage() {
-        let mut config = Config::default();
-        let test_dir = env::current_dir()
-            .unwrap()
-            .join("examples")
-            .join("custom_derive");
-        config.manifest = test_dir.join("Cargo.toml");
-        config.test_timeout = time::Duration::from_secs(60);
-        let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
-        assert_eq!(return_code, 0);
+        with_test_lock(|| {
+            let mut config = Config::default();
+            let test_dir = env::current_dir()
+                .unwrap()
+                .join("examples")
+                .join("custom_derive");
+            config.manifest = test_dir.join("Cargo.toml");
+            config.test_timeout = time::Duration::from_secs(60);
+            let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
+            assert_eq!(return_code, 0);
+        })
+    }
+
+    #[test]
+    fn attribute_macro_coverage() {
+        with_test_lock(|| {
+            let mut config = Config::default();
+            let test_dir = env::current_dir()
+                .unwrap()
+                .join("examples")
+                .join("custom_attribute");
+            config.manifest = test_dir.join("Cargo.toml");
+            config.test_timeout = time::Duration::from_secs(60);
+            let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
+            assert_eq!(return_code, 0);
+        })
     }
 }
