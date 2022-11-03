@@ -12,6 +12,9 @@ mod multiple_names {}
 #[custom_attr(bar)]
 mod multiple_attrs {}
 
+#[custom_attr(bar=true, baz=false)]
+mod attrs_with_value {}
+
 mod test {
     #[test]
     fn single_attr() {
@@ -28,5 +31,11 @@ mod test {
     fn multiple_attrs() {
         assert!(super::multiple_attrs::foo());
         assert!(super::multiple_attrs::bar());
+    }
+
+    #[test]
+    fn attrs_with_value() {
+        assert!(super::attrs_with_value::bar());
+        assert!(!super::attrs_with_value::baz());
     }
 }
