@@ -408,12 +408,15 @@ mod tests {
     extern crate cargo_tarpaulin;
     use self::cargo_tarpaulin::config::Config;
     use self::cargo_tarpaulin::launch_tarpaulin;
-    use std::{env, time, sync::{Arc, Mutex, Once}, panic::UnwindSafe};
-
+    use std::{
+        env,
+        panic::UnwindSafe,
+        sync::{Arc, Mutex, Once},
+        time,
+    };
 
     static mut TARPAULIN_MUTEX: Option<Arc<Mutex<()>>> = None;
     static SETUP_TEST_MUTEX: Once = Once::new();
-
 
     pub(crate) fn test_mutex() -> Arc<Mutex<()>> {
         unsafe {
@@ -423,7 +426,6 @@ mod tests {
             Arc::clone(TARPAULIN_MUTEX.as_ref().unwrap())
         }
     }
-
 
     pub(crate) fn with_test_lock<F, R>(f: F) -> R
     where
@@ -436,7 +438,6 @@ mod tests {
         drop(test_lock);
         res
     }
-
 
     #[test]
     fn proc_macro_coverage() {
