@@ -287,7 +287,7 @@ where
 /// to the one given in order to be expanded by this function. For example, if `macro_path` is
 /// `"foo"` and the file provided calls the macro using `#[bar::foo]`, this function will not know
 /// to expand it, and the macro's code coverage will be underestimated. Also it is important, that
-/// this function would expand every matching attribute, so it is important to desing your macros
+/// this function would expand every matching attribute, so it is important to design your macros
 /// in the way, the attribute do not collide with other attributes used in tests - not only
 /// actual macros, but also attributes eaten by other macros/derives.
 ///
@@ -319,7 +319,7 @@ where
 ///     hello_internal(attr.into(), item.into()).into()
 /// }
 ///
-/// fn hello_intenrnal(attr: proc_macro2::TokenStream, item: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
+/// fn hello_internal(attr: proc_macro2::TokenStream, item: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
 ///     quote!(#item)
 /// }
 ///
