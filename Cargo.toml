@@ -24,4 +24,4 @@ syn = { version = "1.0.100", default-features = false, features = ["derive", "pa
 quote = "1.0.21"
 
 [dev-dependencies]
-cargo-tarpaulin = "0.22.0"
+cargo-tarpaulin = "0.25.1"
