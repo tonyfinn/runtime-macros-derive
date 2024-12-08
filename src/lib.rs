@@ -35,6 +35,8 @@ use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
 
 use attr_macro_visitor::AttributeMacroVisitor;
+use syn::punctuated::Punctuated;
+use syn::{DeriveInput, Ident, Path, Token};
 
 mod attr_macro_visitor;
 
@@ -136,12 +138,12 @@ where
 
 fn uses_derive(attrs: &[syn::Attribute], derive_name: &syn::Path) -> Result<bool, Error> {
     for attr in attrs {
-        if attr.path.is_ident("derive") {
-            let meta = attr.parse_meta().map_err(|e| Error::ParseError(e))?;
-            if let syn::Meta::List(ml) = meta {
-                let uses_derive = ml.nested.iter().any(|nested_meta| {
-                    *nested_meta == syn::NestedMeta::Meta(syn::Meta::Path(derive_name.clone()))
-                });
+        if attr.path().is_ident("derive") {
+            if let syn::Meta::List(ml) = &attr.meta {
+                let nested = ml
+                    .parse_args_with(Punctuated::<Path, Token![,]>::parse_terminated)
+                    .map_err(Error::ParseError)?;
+                let uses_derive = nested.iter().any(|nested_meta| nested_meta == derive_name);
                 if uses_derive {
                     return Ok(true);
                 }
@@ -291,26 +293,7 @@ where
 /// in the way, the attribute do not collide with other attributes used in tests - not only
 /// actual macros, but also attributes eaten by other macros/derives.
 ///
-/// This function follows the standard syn pattern of implementing most of the logic using the
-/// `proc_macro2` types, leaving only those methods that can only exist for `proc_macro=true`
-/// crates, such as types from `proc_macro` or `syn::parse_macro_input` in the outer function.
-/// This allows use of the inner function in tests which is needed to expand it here.
-///
-/// # Returns
-///
-/// `Ok` on success, or an instance of [`Error`] indicating any error that occurred when trying to
-/// read or parse the file.
-///
-/// [`Error`]: enum.Error.html
-///
-/// # Example
-///
-/// ```ignore
-/// # // This example doesn't compile because procedural macros can only be made in crates with
-/// # // type "proc-macro".
-/// # #![cfg(feature = "proc-macro")]
-/// # extern crate proc_macro;
-///
+/// This function follows the standard syn pattern of implementing most of the logic using top
 /// use quote::quote;
 /// use syn::parse_macro_input;
 ///
@@ -405,9 +388,8 @@ impl std::error::Error for Error {
 
 #[cfg(test)]
 mod tests {
-    extern crate cargo_tarpaulin;
-    use self::cargo_tarpaulin::config::Config;
-    use self::cargo_tarpaulin::launch_tarpaulin;
+    use cargo_tarpaulin::config::Config;
+    use cargo_tarpaulin::launch_tarpaulin;
     use std::{
         env,
         panic::UnwindSafe,
@@ -447,7 +429,7 @@ mod tests {
                 .unwrap()
                 .join("examples")
                 .join("custom_assert");
-            config.manifest = test_dir.join("Cargo.toml");
+            config.set_manifest(test_dir.join("Cargo.toml"));
             config.test_timeout = time::Duration::from_secs(60);
             let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
             assert_eq!(return_code, 0);
@@ -462,7 +444,7 @@ mod tests {
                 .unwrap()
                 .join("examples")
                 .join("custom_derive");
-            config.manifest = test_dir.join("Cargo.toml");
+            config.set_manifest(test_dir.join("Cargo.toml"));
             config.test_timeout = time::Duration::from_secs(60);
             let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
             assert_eq!(return_code, 0);
@@ -477,7 +459,7 @@ mod tests {
                 .unwrap()
                 .join("examples")
                 .join("custom_attribute");
-            config.manifest = test_dir.join("Cargo.toml");
+            config.set_manifest(test_dir.join("Cargo.toml"));
             config.test_timeout = time::Duration::from_secs(60);
             let (_trace_map, return_code) = launch_tarpaulin(&config, &None).unwrap();
             assert_eq!(return_code, 0);

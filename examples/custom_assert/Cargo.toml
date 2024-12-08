@@ -12,8 +12,8 @@ proc-macro2 = "1.0"
 quote = "1.0.2"
 
 [dependencies.syn]
-version = "1.0.11"
-features = ["derive", "parsing", "printing", "full"]
+version = "2.0.90"
+features = ["derive", "extra-traits", "parsing", "printing", "full"]
 
 [dev-dependencies]
 runtime-macros-derive = { path = "../.." }

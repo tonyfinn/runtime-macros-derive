@@ -1,6 +1,6 @@
 [package]
 name = "runtime-macros-derive"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Tony Finn <git@tonyfinn.com>", "Jeremy Davis <jeremydavis519@gmail.com>", "Bartlomiej Kuras <bart.k@confio.gmbh>"]
 license = "MIT OR Apache-2.0"
 description = "Simulate expansion of procedural macros at run time"
@@ -19,9 +19,9 @@ coveralls = { repository = "tonyfinn/runtime-macros", branch = "master", service
 crate-type = ["lib"]
 
 [dependencies]
-proc-macro2 = "1.0.47"
-syn = { version = "1.0.100", default-features = false, features = ["derive", "parsing", "full", "visit", "extra-traits", "printing"] }
-quote = "1.0.21"
+proc-macro2 = "1.0.92"
+syn = { version = "2.0.90", default-features = false, features = ["clone-impls", "derive", "parsing", "full", "visit", "extra-traits", "printing"] }
+quote = "1.0.37"
 
 [dev-dependencies]
-cargo-tarpaulin = "0.22.0"
+cargo-tarpaulin = "0.31.3"

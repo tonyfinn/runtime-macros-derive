@@ -48,7 +48,7 @@ struct CustomAttr {
 impl Parse for CustomAttr {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         Ok(CustomAttr {
-            names: input.parse_terminated(AttrEntry::parse)?,
+            names: input.parse_terminated(AttrEntry::parse, Token![,])?,
         })
     }
 }

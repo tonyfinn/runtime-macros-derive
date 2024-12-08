@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+* Update to `syn` 2.x
+* Update `quote` and `proc-macro` to the newest patch
+
 ## 0.6.0
 
 * Support for attribute macros
