@@ -19,7 +19,7 @@ coveralls = { repository = "tonyfinn/runtime-macros", branch = "master", service
 crate-type = ["lib"]
 
 [dependencies]
-proc-macro2 = "1.0.92"
+proc-macro2 = "1.0.93"
 syn = { version = "2.0.90", default-features = false, features = ["clone-impls", "derive", "parsing", "full", "visit", "extra-traits", "printing"] }
 quote = "1.0.37"
 
