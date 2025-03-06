@@ -24,4 +24,4 @@ syn = { version = "2.0.90", default-features = false, features = ["clone-impls",
 quote = "1.0.37"
 
 [dev-dependencies]
-cargo-tarpaulin = "0.31.3"
+cargo-tarpaulin = "0.32.2"
