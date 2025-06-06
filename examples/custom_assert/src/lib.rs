@@ -53,8 +53,8 @@ impl ToTokens for CustomAssert {
 #[cfg(test)]
 mod tests {
     use super::custom_assert_internal;
-    use runtime_macros_derive::emulate_macro_expansion_fallible;
     use std::{env, fs};
+    use sylvia_runtime_macros::emulate_macro_expansion_fallible;
 
     #[test]
     fn code_coverage() {

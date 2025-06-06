@@ -1,5 +1,5 @@
 [package]
-name = "runtime-macros-derive"
+name = "sylvia-runtime-macros"
 version = "0.7.0"
 authors = ["Tony Finn <git@tonyfinn.com>", "Jeremy Davis <jeremydavis519@gmail.com>", "Bartlomiej Kuras <bart.k@confio.gmbh>"]
 license = "MIT OR Apache-2.0"
@@ -19,9 +19,9 @@ coveralls = { repository = "tonyfinn/runtime-macros", branch = "master", service
 crate-type = ["lib"]
 
 [dependencies]
-proc-macro2 = "1.0.92"
-syn = { version = "2.0.90", default-features = false, features = ["clone-impls", "derive", "parsing", "full", "visit", "extra-traits", "printing"] }
-quote = "1.0.37"
+proc-macro2 = "1.0.95"
+syn = { version = "2.0.101", default-features = false, features = ["clone-impls", "derive", "parsing", "full", "visit", "extra-traits", "printing"] }
+quote = "1.0.40"
 
 [dev-dependencies]
-cargo-tarpaulin = "0.31.3"
+cargo-tarpaulin = "0.32.7"

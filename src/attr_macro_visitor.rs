@@ -39,9 +39,13 @@ impl<F> AttributeMacroVisitor<F> {
             .iter()
             .filter(|attr| *attr.path() == self.macro_path)
             .for_each(|attr| {
-                let attr: MacroAttrs = attr.parse_args().unwrap();
-
-                (*self.macro_fn)(attr.tokens, item.to_token_stream());
+                if let Ok(attr) = attr.parse_args::<MacroAttrs>() {
+                    // processing attribute macro with argument(s) in parentheses
+                    (*self.macro_fn)(attr.tokens, item.to_token_stream())
+                } else {
+                    // processing attribute macro without parentheses (and arguments)
+                    (*self.macro_fn)(TokenStream::new(), item.to_token_stream())
+                };
             })
     }
 }

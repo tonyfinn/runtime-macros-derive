@@ -83,7 +83,7 @@ fn custom_attr_internal(attr: TokenStream2, item: TokenStream2) -> TokenStream2 
 
 #[cfg(test)]
 mod tests {
-    use runtime_macros_derive::emulate_attribute_expansion_fallible;
+    use sylvia_runtime_macros::emulate_attribute_expansion_fallible;
 
     use super::custom_attr_internal;
     use std::{env, fs};

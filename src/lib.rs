@@ -36,7 +36,7 @@ use std::panic::{self, AssertUnwindSafe};
 
 use attr_macro_visitor::AttributeMacroVisitor;
 use syn::punctuated::Punctuated;
-use syn::{DeriveInput, Ident, Path, Token};
+use syn::{Path, Token};
 
 mod attr_macro_visitor;
 
