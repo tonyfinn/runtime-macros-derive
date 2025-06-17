@@ -5,7 +5,7 @@ authors = ["Jeremy Davis <jeremydavis519@gmail.com>"]
 edition = "2018"
 
 [lib]
-proc_macro = true
+proc-macro = true
 
 [dependencies]
 proc-macro2 = "1.0"
