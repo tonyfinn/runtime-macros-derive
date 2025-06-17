@@ -36,7 +36,7 @@ use std::panic::{self, AssertUnwindSafe};
 
 use attr_macro_visitor::AttributeMacroVisitor;
 use syn::punctuated::Punctuated;
-use syn::{DeriveInput, Ident, Path, Token};
+use syn::{Path, Token};
 
 mod attr_macro_visitor;
 
@@ -111,11 +111,11 @@ where
 
     let mut content = String::new();
     file.read_to_string(&mut content)
-        .map_err(|e| Error::IoError(e))?;
+        .map_err(Error::IoError)?;
 
     let ast =
-        AssertUnwindSafe(syn::parse_file(content.as_str()).map_err(|e| Error::ParseError(e))?);
-    let macro_path: syn::Path = syn::parse_str(macro_path).map_err(|e| Error::ParseError(e))?;
+        AssertUnwindSafe(syn::parse_file(content.as_str()).map_err(Error::ParseError)?);
+    let macro_path: syn::Path = syn::parse_str(macro_path).map_err(Error::ParseError)?;
 
     panic::catch_unwind(|| {
         syn::visit::visit_file(
@@ -123,7 +123,7 @@ where
                 macro_path,
                 proc_macro_fn,
             },
-            &*ast,
+            &ast,
         );
     })
     .map_err(|_| {
@@ -256,11 +256,11 @@ where
 
     let mut content = String::new();
     file.read_to_string(&mut content)
-        .map_err(|e| Error::IoError(e))?;
+        .map_err(Error::IoError)?;
 
     let ast =
-        AssertUnwindSafe(syn::parse_file(content.as_str()).map_err(|e| Error::ParseError(e))?);
-    let macro_path: syn::Path = syn::parse_str(macro_path).map_err(|e| Error::ParseError(e))?;
+        AssertUnwindSafe(syn::parse_file(content.as_str()).map_err(Error::ParseError)?);
+    let macro_path: syn::Path = syn::parse_str(macro_path).map_err(Error::ParseError)?;
 
     panic::catch_unwind(|| {
         syn::visit::visit_file(
@@ -268,7 +268,7 @@ where
                 macro_path,
                 derive_fn,
             },
-            &*ast,
+            &ast,
         );
     })
     .map_err(|_| {
@@ -334,7 +334,7 @@ where
     let macro_path: syn::Path = syn::parse_str(macro_path).map_err(Error::ParseError)?;
 
     panic::catch_unwind(|| {
-        syn::visit::visit_file(&mut AttributeMacroVisitor::new(macro_path, macro_fn), &*ast);
+        syn::visit::visit_file(&mut AttributeMacroVisitor::new(macro_path, macro_fn), &ast);
     })
     .map_err(|_| {
         Error::ParseError(syn::parse::Error::new(
