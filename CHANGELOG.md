@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+* Handle attribute macro without params ([#140](https://github.com/tonyfinn/runtime-macros-derive/pull/140) - [@DariuszDepta](https://github.com/DariuszDepta))
+
 ## 0.7.0
 
 * Update to `syn` 2.x

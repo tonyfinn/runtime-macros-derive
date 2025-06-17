@@ -1,6 +1,6 @@
 [package]
 name = "runtime-macros-derive"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Tony Finn <git@tonyfinn.com>", "Jeremy Davis <jeremydavis519@gmail.com>", "Bartlomiej Kuras <bart.k@confio.gmbh>"]
 license = "MIT OR Apache-2.0"
 description = "Simulate expansion of procedural macros at run time"
